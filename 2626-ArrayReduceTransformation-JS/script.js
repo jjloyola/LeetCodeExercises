@@ -57,25 +57,55 @@ Constraints:
 */
 
 /**
- * @param {string} val
- * @return {Object}
+ * @param {number[]} nums
+ * @param {Function} fn
+ * @param {number} init
+ * @return {number}
  */
-var expect = function (val) {
-  return {
-    toBe: function (val2) {
-      if (val === val2) return true;
-      throw new Error("Not Equal");
-    },
-    notToBe: function (val2) {
-      if (val !== val2) return true;
-      throw new Error("Equal");
-    },
-  };
+var reduce = function (nums, fn, init) {
+  //If the length of the array is 0, the function should return init.
+  if (nums.length === 0) return init;
+
+  let accum = init;
+
+  for (curr of nums) {
+    accum = fn(accum, curr);
+  }
+
+  return accum;
 };
 
-console.log(expect(5).toBe(null));
+var test = function (nums, fn, init, expected) {
+  console.log(`Testing nums: ${nums}, fn: ${fn}, init: ${init}`);
+  console.log(`Result: ${reduce(nums, fn, init)}, Expected: ${expected}`);
+};
 
-/**
- *
- * expect(5).notToBe(5); // throws "Equal"
- */
+//Example 1
+test(
+  (nums = [1, 2, 3, 4]),
+  (fn = function sum(accum, curr) {
+    return accum + curr;
+  }),
+  (init = 0),
+  (expected = 10)
+);
+
+//Example 2
+test(
+  (nums = [1, 2, 3, 4]),
+  (fn = function sum(accum, curr) {
+    return accum + curr * curr;
+  }),
+  (init = 100),
+  (expected = 130)
+);
+
+//Example 3
+test(
+  (nums = []),
+  (fn = function sum(accum, curr) {
+    return 0;
+  }),
+  (init = 25),
+  (expected = 25)
+);
